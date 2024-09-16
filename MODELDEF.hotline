@@ -1,0 +1,448 @@
+Model FDMHotlinePlayerDoll
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.2
+   AngleOffset 180
+
+   Skin 0 "Play_1_Unarmed.png"
+   FrameIndex HOT0 A 0 0
+   Skin 0 "Play_2_Unarmed.png"
+   FrameIndex HOT0 B 0 0
+   Skin 0 "Play_3_Unarmed.png"
+   FrameIndex HOT0 C 0 0
+   Skin 0 "Play_4_Unarmed.png"
+   FrameIndex HOT0 D 0 0
+   Skin 0 "Play_5_Unarmed.png"
+   FrameIndex HOT0 E 0 0
+   Skin 0 "Play_6_Unarmed.png"
+   FrameIndex HOT0 F 0 0
+   Skin 0 "Play_7_Unarmed.png"
+   FrameIndex HOT0 G 0 0
+   Skin 0 "Play_8_Unarmed.png"
+   FrameIndex HOT0 H 0 0
+
+   Skin 0 "Play_1_Bat.png"
+   FrameIndex HOT0 I 0 0
+   Skin 0 "Play_2_Bat.png"
+   FrameIndex HOT0 J 0 0
+   Skin 0 "Play_3_Bat.png"
+   FrameIndex HOT0 K 0 0
+   Skin 0 "Play_4_Bat.png"
+   FrameIndex HOT0 L 0 0
+   Skin 0 "Play_5_Bat.png"
+   FrameIndex HOT0 M 0 0
+   Skin 0 "Play_6_Bat.png"
+   FrameIndex HOT0 N 0 0
+   Skin 0 "Play_7_Bat.png"
+   FrameIndex HOT0 O 0 0
+   Skin 0 "Play_8_Bat.png"
+   FrameIndex HOT0 P 0 0
+
+   Skin 0 "Kill_1_Bat.png"
+   FrameIndex HOT0 Q 0 0
+   Skin 0 "Kill_2_Bat.png"
+   FrameIndex HOT0 R 0 0
+   Skin 0 "Kill_3_Bat.png"
+   FrameIndex HOT0 S 0 0
+   Skin 0 "Kill_4_Bat.png"
+   FrameIndex HOT0 T 0 0
+   Skin 0 "Kill_5_Bat.png"
+   FrameIndex HOT0 U 0 0
+   Skin 0 "Kill_6_Bat.png"
+   FrameIndex HOT0 V 0 0
+   Skin 0 "Kill_7_Bat.png"
+   FrameIndex HOT0 W 0 0
+   Skin 0 "Kill_8_Bat.png"
+   FrameIndex HOT0 X 0 0
+
+   Scale 1.0 -1.0 1.0
+
+   Skin 0 "Kill_1_Bat.png"
+   FrameIndex HOT0 Y 0 0
+   Skin 0 "Kill_2_Bat.png"
+   FrameIndex HOT0 Z 0 0
+   Skin 0 "Kill_3_Bat.png"
+   FrameIndex HOT1 A 0 0
+   Skin 0 "Kill_4_Bat.png"
+   FrameIndex HOT1 B 0 0
+   Skin 0 "Kill_5_Bat.png"
+   FrameIndex HOT1 C 0 0
+   Skin 0 "Kill_6_Bat.png"
+   FrameIndex HOT1 D 0 0
+   Skin 0 "Kill_7_Bat.png"
+   FrameIndex HOT1 E 0 0
+   Skin 0 "Kill_8_Bat.png"
+   FrameIndex HOT1 F 0 0
+
+   Scale 1.0 1.0 1.0
+   Offset 0.0 0.0 0.075
+   Skin 0 "Dead_1_.png"
+   FrameIndex HOT1 G 0 0
+   Skin 0 "Dead_2_.png"
+   FrameIndex HOT1 H 0 0
+   Skin 0 "Dead_3_.png"
+   FrameIndex HOT1 I 0 0
+   Skin 0 "Dead_4_.png"
+   FrameIndex HOT1 J 0 0
+   Skin 0 "Dead_5_.png"
+   FrameIndex HOT1 K 0 0
+
+   Skin 0 "Play_1_Pistol.png"
+   FrameIndex HOT1 L 0 0
+   Skin 0 "Play_2_Pistol.png"
+   FrameIndex HOT1 M 0 0
+   Skin 0 "Play_3_Pistol.png"
+   FrameIndex HOT1 N 0 0
+   Skin 0 "Play_4_Pistol.png"
+   FrameIndex HOT1 O 0 0
+   Skin 0 "Play_5_Pistol.png"
+   FrameIndex HOT1 P 0 0
+   Skin 0 "Play_6_Pistol.png"
+   FrameIndex HOT1 Q 0 0
+   Skin 0 "Play_7_Pistol.png"
+   FrameIndex HOT1 R 0 0
+   Skin 0 "Play_8_Pistol.png"
+   FrameIndex HOT1 S 0 0
+
+   Skin 0 "Kill_1_Pistol.png"
+   FrameIndex HOT3 T 0 0
+
+   Skin 0 "Play_1_Club.png"
+   FrameIndex HOT1 T 0 0
+   Skin 0 "Play_2_Club.png"
+   FrameIndex HOT1 U 0 0
+   Skin 0 "Play_3_Club.png"
+   FrameIndex HOT1 V 0 0
+   Skin 0 "Play_4_Club.png"
+   FrameIndex HOT1 W 0 0
+   Skin 0 "Play_5_Club.png"
+   FrameIndex HOT1 X 0 0
+   Skin 0 "Play_6_Club.png"
+   FrameIndex HOT1 Y 0 0
+   Skin 0 "Play_7_Club.png"
+   FrameIndex HOT1 Z 0 0
+   Skin 0 "Play_8_Club.png"
+   FrameIndex HOT2 A 0 0
+
+   Skin 0 "Kill_1_Club.png"
+   FrameIndex HOT2 B 0 0
+   Skin 0 "Kill_2_Club.png"
+   FrameIndex HOT2 C 0 0
+   Skin 0 "Kill_3_Club.png"
+   FrameIndex HOT2 D 0 0
+   Skin 0 "Kill_4_Club.png"
+   FrameIndex HOT2 E 0 0
+   Skin 0 "Kill_5_Club.png"
+   FrameIndex HOT2 F 0 0
+   Skin 0 "Kill_6_Club.png"
+   FrameIndex HOT2 G 0 0
+   Skin 0 "Kill_7_Club.png"
+   FrameIndex HOT2 H 0 0
+   Skin 0 "Kill_8_Club.png"
+   FrameIndex HOT2 I 0 0
+   Skin 0 "Kill_9_Club.png"
+   FrameIndex HOT2 J 0 0
+
+   Scale 1.0 -1.0 1.0
+
+   Skin 0 "Kill_1_Club.png"
+   FrameIndex HOT2 K 0 0
+   Skin 0 "Kill_2_Club.png"
+   FrameIndex HOT2 L 0 0
+   Skin 0 "Kill_3_Club.png"
+   FrameIndex HOT2 M 0 0
+   Skin 0 "Kill_4_Club.png"
+   FrameIndex HOT2 N 0 0
+   Skin 0 "Kill_5_Club.png"
+   FrameIndex HOT2 O 0 0
+   Skin 0 "Kill_6_Club.png"
+   FrameIndex HOT2 P 0 0
+   Skin 0 "Kill_7_Club.png"
+   FrameIndex HOT2 Q 0 0
+   Skin 0 "Kill_8_Club.png"
+   FrameIndex HOT2 R 0 0
+   Skin 0 "Kill_9_Club.png"
+   FrameIndex HOT2 S 0 0
+
+   Scale 1.0 1.0 1.0
+
+   Skin 0 "Play_1_Knife.png"
+   FrameIndex HOT2 T 0 0
+   Skin 0 "Play_2_Knife.png"
+   FrameIndex HOT2 U 0 0
+   Skin 0 "Play_3_Knife.png"
+   FrameIndex HOT2 V 0 0
+   Skin 0 "Play_4_Knife.png"
+   FrameIndex HOT2 W 0 0
+   Skin 0 "Play_5_Knife.png"
+   FrameIndex HOT2 X 0 0
+   Skin 0 "Play_6_Knife.png"
+   FrameIndex HOT2 Y 0 0
+   Skin 0 "Play_7_Knife.png"
+   FrameIndex HOT2 Z 0 0
+   Skin 0 "Play_8_Knife.png"
+   FrameIndex HOT3 A 0 0
+
+   Skin 0 "Kill_1_Knife.png"
+   FrameIndex HOT3 B 0 0
+   Skin 0 "Kill_2_Knife.png"
+   FrameIndex HOT3 C 0 0
+   Skin 0 "Kill_3_Knife.png"
+   FrameIndex HOT3 D 0 0
+   Skin 0 "Kill_4_Knife.png"
+   FrameIndex HOT3 E 0 0
+   Skin 0 "Kill_5_Knife.png"
+   FrameIndex HOT3 F 0 0
+   Skin 0 "Kill_6_Knife.png"
+   FrameIndex HOT3 G 0 0
+   Skin 0 "Kill_7_Knife.png"
+   FrameIndex HOT3 H 0 0
+   Skin 0 "Kill_8_Knife.png"
+   FrameIndex HOT3 I 0 0
+
+   Scale 1.0 -1.0 1.0
+
+   Skin 0 "Kill_1_Knife.png"
+   FrameIndex HOT3 K 0 0
+   Skin 0 "Kill_2_Knife.png"
+   FrameIndex HOT3 L 0 0
+   Skin 0 "Kill_3_Knife.png"
+   FrameIndex HOT3 M 0 0
+   Skin 0 "Kill_4_Knife.png"
+   FrameIndex HOT3 N 0 0
+   Skin 0 "Kill_5_Knife.png"
+   FrameIndex HOT3 O 0 0
+   Skin 0 "Kill_6_Knife.png"
+   FrameIndex HOT3 P 0 0
+   Skin 0 "Kill_7_Knife.png"
+   FrameIndex HOT3 Q 0 0
+   Skin 0 "Kill_8_Knife.png"
+   FrameIndex HOT3 R 0 0
+
+   Scale 1.0 1.0 1.0
+
+}
+
+Model FDMHotlinePlayer
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.2
+   AngleOffset 180
+
+   Skin 0 "Play_1_Unarmed.png"
+   FrameIndex HOT0 A 0 0
+}
+
+Model FDMHotline_Bullet
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.05
+   Scale 0.6 0.6 0.6
+   AngleOffset 180
+
+   Skin 0 "HotlineBullet1.png"
+   FrameIndex HOTB A 0 0
+
+   Skin 0 "HotlineBullet2.png"
+   FrameIndex HOTB B 0 0
+
+}
+
+Model FDMHotline_Bat_Drop
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.05
+   Scale 1.0 1.0 1.0
+   AngleOffset 180
+
+   Skin 0 "Weapon_Bat.png"
+   FrameIndex HOTB A 0 0
+
+}
+
+Model FDMHotline_Club_Drop
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.05
+   Scale 1.0 1.0 1.0
+   AngleOffset 180
+
+   Skin 0 "Weapon_Club.png"
+   FrameIndex HOTB A 0 0
+
+}
+
+Model FDMHotline_Pistol_DROP
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.05
+   Scale 1.0 1.0 1.0
+   AngleOffset 180
+
+   Skin 0 "Weapon_Pistol.png"
+   FrameIndex HOTB A 0 0
+
+}
+
+Model FDMHotline_Knife_DROP
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.05
+   Scale 1.0 1.0 1.0
+   AngleOffset 180
+
+   Skin 0 "Weapon_Knife.png"
+   FrameIndex HOTB A 0 0
+
+}
+
+Model FDMHotlineDeadBlood
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.05
+   AngleOffset 180
+
+   Skin 0 "FDMHotlineBlood.png"
+   FrameIndex HBLO A 0 0
+
+}
+
+Model FDMHotlineDeadBloodSplat
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.05
+   AngleOffset 180
+
+   Skin 0 "HotlineBloodSplat1.png"
+   FrameIndex HBLO B 0 0
+   Skin 0 "HotlineBloodSplat2.png"
+   FrameIndex HBLO C 0 0
+   Skin 0 "HotlineBloodSplat3.png"
+   FrameIndex HBLO D 0 0
+
+}
+
+Model FDMHotline_TV
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.2
+   Scale 1.0 1.0 1.0
+   AngleOffset 180
+
+   Skin 0 "Hotline_TV.png"
+   FrameIndex HMTV A 0 0
+   Skin 0 "Hotline_TV_Dead.png"
+   FrameIndex HMTV B 0 0
+
+}
+
+Model FDMHotline_Gripper
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.3
+   Scale 2.0 2.0 2.0
+   AngleOffset 270
+
+   Skin 0 "Gripper_1.png"
+   FrameIndex GRIP A 0 0
+   Skin 0 "Gripper_2.png"
+   FrameIndex GRIP B 0 0
+   Skin 0 "Gripper_3.png"
+   FrameIndex GRIP C 0 0
+   Skin 0 "Gripper_4.png"
+   FrameIndex GRIP D 0 0
+   Skin 0 "Gripper_5.png"
+   FrameIndex GRIP E 0 0
+   Skin 0 "Gripper_6.png"
+   FrameIndex GRIP F 0 0
+   Skin 0 "Gripper_7.png"
+   FrameIndex GRIP G 0 0
+   Skin 0 "Gripper_8.png"
+   FrameIndex GRIP H 0 0
+
+}
+
+Model FDMHotline_Car_Cop
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.3
+   Scale 2.0 2.0 2.0
+   AngleOffset 180
+
+   Skin 0 "Car_Cop.png"
+   FrameIndex VEHI A 0 0
+}
+
+Model FDMHotline_Car_Gangs
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.3
+   Scale 2.0 2.0 2.0
+   AngleOffset 180
+
+   Skin 0 "Car_Gangs.png"
+   FrameIndex VEHI A 0 0
+}
+
+Model FDMHotline_Car_50Blessings
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.3
+   Scale 2.0 2.0 2.0
+   AngleOffset 180
+
+   Skin 0 "Car_50.png"
+   FrameIndex VEHI A 0 0
+}
+
+Model FDMHotline_Car_Fans
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.3
+   Scale 2.0 2.0 2.0
+   AngleOffset 180
+
+   Skin 0 "Car_Fans.png"
+   FrameIndex VEHI A 0 0
+}
+
+Model FDMHotline_Worm
+{
+   Path "Models/Hotline"
+   Model 0 "Hotlineplayer.md3"
+   Offset 0.0 0.0 0.001
+   AngleOffset 180
+
+   Skin 0 "LSD_1.png"
+   FrameIndex GRIP A 0 0
+   Skin 0 "LSD_2.png"
+   FrameIndex GRIP B 0 0
+   Skin 0 "LSD_3.png"
+   FrameIndex GRIP C 0 0
+   Skin 0 "LSD_4.png"
+   FrameIndex GRIP D 0 0
+   Skin 0 "LSD_5.png"
+   FrameIndex GRIP E 0 0
+   Skin 0 "LSD_6.png"
+   FrameIndex GRIP F 0 0
+   Skin 0 "LSD_7.png"
+   FrameIndex GRIP G 0 0
+   Skin 0 "LSD_8.png"
+   FrameIndex GRIP H 0 0
+
+}

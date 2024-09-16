@@ -1,0 +1,5 @@
+map HOTLINE "Hotline Miami"
+{
+	NoJump
+	NoCrouch
+}

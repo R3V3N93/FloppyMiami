@@ -1,0 +1,543 @@
+#library "hotline"
+
+#nocompact
+#import "zcommon.bcs"
+
+#define PLAYER_SPEED 10
+#define STATE_NUMBER 26
+#define PLAYER_TID_CONST 10000
+#define CAMERA_TID_CONST 9000
+#define DOLL_TID_CONST 6000
+#define DOLL_OFFSET 5312.0
+#define GRIPPER_CONVERSATION (35 * 10) //tics
+#define GRIPPER_SPAWN (35 * 180) //tics
+
+str statelist[STATE_NUMBER] = {"Spawn", "Spawn.Weapon", "Spawn.bat", "Spawn.pistol", "See", "See.Weapon", "See.bat", "See.Pistol", "Melee", "Missile", "Missile.Bat", "Missile.Pistol", "Pain", "Death", "XDeath", "Death1", "Death2", "Death3", "Death4", "DeathBlood", "Spawn.Club", "See.Club", "Missile.Club", "Spawn.Knife", "See.Knife", "Missile.Knife"};
+str translationlist[4] = {"HM_Blue", "HM_Red", "HM_Green", "HM_Gold"};
+str translationlist2[4] = {"HM_Blue_2", "HM_Red_2", "HM_Green_2", "HM_Gold_2"};
+
+int countdown = 10;
+
+// This is an on-screen mouse script written by wtg62.
+// I've written it so that it tries to match your operating system mouse sensitivity.
+// So mess with your mouse settings as you like!
+// No matter what you do, you won't experience awkward cursor movement in game!
+
+// Mouse's coordinates
+// Starting values don't matter that much, but I prefer it to start in the center of the screen.
+int mx = 0.5;
+int my = 0.5;
+
+// Pixels to move every tic when using keyboard to move cursor.
+int kbSpeed = 10.0;
+
+// Cursor graphic
+str cursorGraphic = "cursor";
+
+// Hud size. The numbers are big because I want a small cursor graphic.
+int HUDX = 960.0;
+int HUDY = 600.0;
+
+bool grippercam = false;
+
+/*
+ * Main code for logging messages to clients.
+ */
+
+strict namespace
+{
+	bool CanLogDebug()
+	{
+		return GetCvar("developer") == 1 || GetCvar("cl_zh_showDebugMessages") == 1;
+	}
+
+	// This is the name of the base clientside script that is invoked by the log messages.
+	private enum : str { LOGMESSAGECLIENTSIDENAME = "LogMessageClientside" };
+	
+	// The log message's severity.
+	enum LogSeverityT {
+
+		// The message is considered a debug message.
+		// These are not shown unless the `cl_zh_showDebugMessages` cvar is enabled.
+		severityDebug,
+		
+		// The message is considered an info message.
+		severityInfo,
+		
+		// The message is considered a warning message.
+		severityWarning,
+		
+		// The message is considered an error message.
+		severityError
+	};
+	
+	// @public
+	// @summary Sends a log message to all clients with the given severity.
+	function void LogMessageSeverity(str message, LogSeverityT severity)
+	{
+		if(!CanLogDebug())
+			return;
+
+
+		str color = severity == severityDebug ? "j" :
+			severity == severityInfo ? "n" :
+			severity == severityWarning ? "k" :
+			"g";	
+		str prefix = severity == severityDebug ? "debug" :
+			severity == severityInfo ? "info" :
+			severity == severityWarning ? "warning" :
+			"error";	
+		str formatted = "\c" + str(color) + prefix + ": \cj" + message;
+		if(!NamedSendNetworkString(LOGMESSAGECLIENTSIDENAME, formatted)) {
+			Log(s:"\cgError\cj: A log message with severity could not be delivered to clients.");
+		}
+	}
+	
+	// @public
+	// @summary Sends a log message to the client with the given id.
+	function void LogMessageClient(str message, int clientId)
+	{
+		// Don't need to send to bots.
+		// If this is done anyway, we get two log messages offline.
+		if (PlayerIsBot(clientId)) {
+			return;
+		}
+		
+		if(!NamedSendNetworkString(LOGMESSAGECLIENTSIDENAME, message, clientId)) {
+			Log(s:"\cgError\cj: A log message could not be delivered to client " + str(clientId) + ".");
+		}
+	}
+	
+	// @public
+	// @summary Sends a log message to the activator of the function.
+	function void LogMessageActivator(str message)
+	{
+		LogMessageClient(message, PlayerNumber());
+	}
+	
+	// @public
+	// @summary Sends a log message to all clients.
+	function void LogMessage(str message)
+	{
+		if(!NamedSendNetworkString(LOGMESSAGECLIENTSIDENAME, message)) {
+			Log(s:"\cgError\cj: A log message could not be delivered to clients.");
+		}
+	}
+	
+	// @public
+	// @summary Sends a debug log message to all clients.
+	function void LogDebug(str message)
+	{
+		LogMessageSeverity(message, severityDebug);
+	}
+
+	function void LogDebugLoop(str message)
+	{
+		if(CanLogLoopDebug())
+			LogDebug(message);
+	}
+
+	// @public
+	// @summary Sends an info log message to all clients.
+	function void LogInfo(str message)
+	{
+		LogMessageSeverity(message, severityInfo);
+	}
+
+	// @public
+	// @summary Sends a warning log message to all clients.
+	function void LogWarning(str message)
+	{
+		LogMessageSeverity(message, severityWarning);
+	}
+
+	// @public
+	// @summary Sends an error log message to all clients.
+	function void LogError(str message)
+	{
+		LogMessageSeverity(message, severityError);
+	}
+
+	bool CanLogLoopDebug()
+	{
+		return GetCvar("developer") || GetCvar("cl_zh_developer_loop");
+	}
+	
+	script "LogMessageClientside" (int stringInt) net clientside
+	{
+		// If logging offline, the script will be executed on the local machine.
+		// This means the activator is slightly different.
+		if (!IsNetworkGame() && !SetActivatorToPlayer(ConsolePlayerNumber()))
+		{
+			Log(s:"\cgError\cj: Activator could not be switched for offline log message.");
+		}
+
+		str string = (str)stringInt;
+		
+		/* log("-------------------------------------------------------------");
+		log(s:string);
+		log(d:PlayerNumber());
+		log(d:ConsolePlayerNumber());
+		log(d:GetCvar("developer"));
+		log(d:GetCvar("cl_zh_showDebugMessages"));
+		log(s:StrStartsWith(string, "\cj") ? "true" : "false");
+		log("-------------------------------------------------------------"); */
+		
+		// Debug messages require the "cl_zh_developer" cvar to be enabled.
+
+			// Do not show debug messages if neither `developer` or `cl_zh_developer` cvar is enabled.
+			if (!CanLogDebug()) {
+				terminate;
+			}
+		Log(s:string);
+	}
+	
+	function str Teamteacher()
+	{
+		return str(PlayerTeam());
+	}
+}
+
+function int abs(int x)
+{
+	if (x > 0.0)
+		return x;
+	return -x;
+}
+strict namespace 
+{
+script 2 open
+{
+	SetActivator(-1);
+	SetActorPitch(420420, 0.25);
+
+	if(GetGameModeState() == GAMESTATE_COUNTDOWN || GetGameModeState() == GAMESTATE_WAITFORPLAYERS)
+	{
+		terminate;
+	}
+
+	While(Countdown >= 1)
+	{
+		Delay(35); 
+		countdown--;
+	}
+
+	SetMusic("music/LE_PERV.mid");
+
+	HudMessageBold(s:""; HUDMSG_PLAIN, 5, CR_UNTRANSLATED, 360.0, 46.0, 0.0);
+	HudMessageBold(s:""; HUDMSG_PLAIN, 4, CR_UNTRANSLATED, 360.0, 46.0, 0.0);
+	HudMessageBold(s:""; HUDMSG_PLAIN, 3, CR_UNTRANSLATED, 360.0, 46.0, 0.0);
+	HudMessageBold(s:""; HUDMSG_PLAIN, 2, CR_UNTRANSLATED, 360.0, 46.0, 0.0);
+
+	SetUserVariable(999, "user_ammo", 15);
+
+	Delay(GRIPPER_SPAWN);
+
+	SetMusic("music/FAHKEET.ogg");
+	SetHudSize(720, 540, false);
+	SetFont("HMConvUp");
+	HudMessageBold(s:"a"; HUDMSG_PLAIN, 5, CR_UNTRANSLATED, 360.0, 46.0, 0.0);
+	SetFont("BIGFONT");
+	HudMessageBold(s:"The gripper has appeared! Be aware of him getting ya a GRIP!"; HUDMSG_PLAIN, 4, CR_UNTRANSLATED, 360.0, 46.0, 0.0);
+
+	SpawnSpotForced("FDMHoTline_Gripper", 500, 420);
+	SetActorState(420, "Gripping");
+	Floor_RaiseToHighest(2, 128);
+	ChangeFloor(1, "HMWOOD01");
+}
+}
+
+Script 1 ENTER
+{
+	if(!PlayerInGame(PlayerNumber()))
+	{
+		terminate; //safety
+	}
+
+	LogDebug(Teamteacher());
+	ClearInventory();
+	SetPlayerProperty(0, true, PROP_TOTALLYFROZEN);
+	ChangeCamera(420420, 0, 0);
+	
+	SetHudSize(720, 540, false);
+	SetFont("HMConvD");
+	HudMessage(s:"a"; HUDMSG_PLAIN, 3, CR_UNTRANSLATED, 360.0, 453.125, 0.0);
+	SetFont("HMConvUp");
+	HudMessage(s:"a"; HUDMSG_PLAIN, 5, CR_UNTRANSLATED, 360.0, 46.0, 0.0);
+
+	SetFont("BIGFONT");
+	HudMessage(s:"Grab a weapon, and kill your enemies!\nMOUSE1 : Attack with weapon\nMOUSE2 - Pick up/Throw"; HUDMSG_PLAIN, 2, CR_UNTRANSLATED, 360.0, 487.875, 0.0);
+
+	if((GetGameModeState() == GAMESTATE_COUNTDOWN || GetGameModeState() == GAMESTATE_WAITFORPLAYERS))
+	{
+		SetFont("BIGFONT");
+		HudMessage(s:"Waiting For Players"; HUDMSG_PLAIN, 4, CR_UNTRANSLATED, 360.0, 46.0, 0.0);
+		terminate;
+	}
+
+	while(countdown >= 1)
+	{
+		SetFont("BIGFONT");
+		HudMessage(s:"Game starts in ", d:countdown; HUDMSG_PLAIN, 4, CR_UNTRANSLATED, 360.0, 46.0, 0.0);
+		Delay(1);
+	}
+
+	SetPlayerProperty(0, false, PROP_TOTALLYFROZEN);
+
+	if(!MorphActor(0, "FDMHotlinePlayer", "", 1048576, MRF_TRANSFERTRANSLATION, "mapspot", "mapspot"))
+	{
+		PrintBold(d:PlayerNumber(), s:" is Not morphed!");
+	}
+	
+
+	int dolltid = DOLL_TID_CONST + PlayerNumber();
+	int mytid = PLAYER_TID_CONST + PlayerNumber();
+	int cameratid = PlayerNumber() + CAMERA_TID_CONST;
+
+	Thing_ChangeTID(0, mytid);
+
+	//SetTranslation(mytid, translationlist[PlayerTeam()]);
+	//SetTranslation(mytid, translationlist2[PlayerTeam()]);
+	
+
+
+	GiveInventory("FDMHotline_Hand", 1);
+	SetWeapon("FDMHotline_Hand");
+	GiveInventory("In_Operation", 1);
+	ACS_NamedExecuteAlways("NorthFixer", 0);
+	NamedExecuteClientScript("Mouse", PlayerNumber(), mytid, dolltid);
+	NamedExecuteClientScript("Camera", PlayerNumber(), mytid, dolltid, cameratid);
+	
+	ACS_NamedExecuteAlways("Doll", 0, mytid, dolltid, PlayerTeam());
+	
+}
+
+
+
+Script "NorthFixer" (void)
+{
+	LogDebug("NorthFixer : Start");
+	while(ClassifyActor(0) & ACTOR_ALIVE && PlayerInGame(PlayerNumber()) == true)
+	{
+		//LogDebugLoop("NorthFixer : Loop.Angle");
+		SetActorAngle(0, 0.25);
+		//LogDebugLoop("NorthFixer : Loop.Pitch");
+		SetActorPitch(0, 0.0);
+		Delay(1);
+	}
+	LogDebug("NorthFixer : Terminated");
+	Terminate;
+}
+
+strict namespace angleteacher
+{
+	function int value(fixed angle){
+		return int(angle * 360.0);}
+}
+
+Script "AngleTeacher" (void)
+{
+	SetResultValue(CheckInventory("FDMHotline_Angle"));
+}
+
+Script "Doll" (int playertid, int dolltid, int team) CLIENTSIDE
+{
+	if(SpawnForced("FDMHotlinePlayerDoll", 0.0, 0.0, 0.0, dolltid, 64) == 0)
+	{
+		PrintBold(s:"doll not spawned!");
+	}
+	while(!IsTidUsed(dolltid)){delay(1);} //safety
+	SetActivator(dolltid);
+	Setpointer(AAPTR_TARGET, playertid);
+	LogDebug("Doll : Start");
+	LogDebug("Doll : Changing their colour");
+
+	SetUserVariable(dolltid, "user_ptid", playertid);
+	CreateTranslation(1, 251:251=200:200);
+	CreateTranslation(2, 251:251=176:176);
+	CreateTranslation(3, 251:251=112:112);
+	CreateTranslation(4, 251:251=231:231);
+	Thing_SetTranslation(dolltid, team + 1);
+	while(!(ClassifyActor(playertid) & ACTOR_NONE) && PlayerInGame(playertid - PLAYER_TID_CONST) == true)
+	{
+		//LogDebugLoop("Doll : Loop");
+		//if(GetActorX(dolltid) != GetActorX(playertid) || GetActorY(dolltid) != GetActorY(playertid))
+		//Warp(playertid, /*DOLL_OFFSET*/0.0, 0.0, 0.0, 0.0, WARPF_ABSOLUTEOFFSET|WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION);
+			Delay(1);
+	}
+	LogDebug("Doll : Removal.Start");
+	Thing_Remove(dolltid);
+	LogDebug("Doll : Removal.Done");
+	Terminate;
+}
+
+Script "DollStater" (int state)
+{
+	for(int v = 0; v < 64; v++)
+	{
+		NamedExecuteClientScript("DollStaterClient", v, PlayerNumber(), state);
+	}
+	
+}
+
+Script "DollStaterClient" (int pnum, int state) CLIENTSIDE
+{
+	SetActorState(DOLL_TID_CONST + pnum, statelist[state]);
+}
+
+Script "Camera" (int playertid, int dolltid, int cameratid) CLIENTSIDE
+{
+	//PrintBold(d:GetActorProperty(0, APROP_MasterTID));
+	
+	SpawnForced("Mapspot", 160.0, 0.0, 230.0, cameratid, 64);
+	
+
+	SetActivator(cameratid);
+
+	SetActorPitch(0, 64 << 8);
+
+	LogDebug("Camera : Start");
+
+	while(ClassifyActor(playertid) & ACTOR_ALIVE && PlayerInGame(playertid - PLAYER_TID_CONST) == true)
+	{
+		//LogDebugLoop("Camera : Loop.Angle1");
+
+		ChangeCamera(cameratid, 0, 0); //put this in loop in order to prevent player from changing the camera via f12(spy cam)
+		SetActorAngle(cameratid, 0.25);
+		
+		//LogDebugLoop("Camera : Loop.Warp");
+		Warp(dolltid, 0.0, 0.0, 230.0, 0.0, WARPF_USECALLERANGLE|WARPF_NOCHECKPOSITION);
+		
+		//LogDebugLoop("Camera : Loop.Angle2");
+		SetActorAngle(cameratid, 0.25);
+		
+		Delay(1);
+	}
+	LogDebug("Camera : Removal.Start");
+	Thing_Remove(cameratid);
+	LogDebug("Camera : Removal.Done");
+	Terminate;
+}
+
+
+// This function will take any value from 0.0 to 1.0.
+// It will then convert it to a number between 0 and the "scale" variable.
+// It will return a fixed number.
+function int fixedToPixel(int x, int scale)
+{
+    // Here, I multiply 'x' by our scale to get the appropriate number.
+    // However, I must round down (basically truncate digits).
+    // The best way to do this is to shift our bits to the right, and back to the left.
+    // This effectively rounds down for us.
+    return (FixedMul(x,scale)>>16)<<16;
+}
+
+Script "Mouse" (int playertid, int dolltid) CLIENTSIDE
+{
+
+    // Set up
+    SetHudSize(960,600,0); // I just use these numbers for a small cursor graphic.
+    SetFont(cursorGraphic); // Optional, but looks better than using a character such as "+" or "."
+	int mousex;
+	int mousey;
+
+	LogDebug("Mouse : Start");
+    while(ClassifyActor(playertid) & ACTOR_ALIVE && PlayerInGame(playertid - PLAYER_TID_CONST) == true)
+    {
+        // We need to support keybinds for keyboard look.
+        // So let's check if we're using the keyboard or mouse, and then respond appropriately.
+		//LogDebugLoop("Mouse : Loop.Keyboard/MouseCheck?IDK");
+        if(GetPlayerInput(playertid - PLAYER_TID_CONST,INPUT_BUTTONS) & (BT_LEFT|BT_RIGHT|BT_LOOKUP|BT_LOOKDOWN))
+        {
+            // Keyboard controlled cursor
+            // Should be slow enough for user to be able to precisely hover over stuff.
+            // 'kbSpeed' pixels per tic.
+            // I use our previously set hud size to make movement speed on both axes look the same.
+            if(GetPlayerInput(playertid - PLAYER_TID_CONST,INPUT_BUTTONS) & BT_LEFT)       mx -= kbSpeed/HUDX;
+            if(GetPlayerInput(playertid - PLAYER_TID_CONST,INPUT_BUTTONS) & BT_RIGHT)      mx += kbSpeed/HUDX;
+            if(GetPlayerInput(playertid - PLAYER_TID_CONST,INPUT_BUTTONS) & BT_LOOKUP)     my -= kbSpeed/HUDY;
+            if(GetPlayerInput(playertid - PLAYER_TID_CONST,INPUT_BUTTONS) & BT_LOOKDOWN)   my += kbSpeed/HUDY;
+        }
+		
+        else
+        {
+            // So here's our mouse controlled cursor.
+            // Basically, these 2 variables below will take our player's yaw and pitch input and scale it.
+            // Input is scaled so that our in-game "cursor" movement accurately matches operating system mouse movement.
+            // 'pitchscale' is also basically multiplied by 2.
+            // Why? Because pitch input is 2x slower than yaw input.
+            int yawScale   = FixedDiv(2.5,FixedMul(GetCVar("m_yaw"),GetCVar("mouse_sensitivity")));
+            int pitchScale = FixedDiv(5.0,FixedMul(GetCVar("m_pitch"),GetCVar("mouse_sensitivity")));
+
+            // Now we get our delta x and delta y. 'Delta' means 'change in'. So 'change in x', and 'change in y'.
+            // We'll use these to offset our current mouse position.
+            int dmx = -FixedMul(GetPlayerInput(playertid - PLAYER_TID_CONST,INPUT_YAW),yawScale);
+            int dmy = -FixedMul(GetPlayerInput(playertid - PLAYER_TID_CONST,INPUT_PITCH),pitchScale);
+
+            // Apply our offsets.
+            mx += dmx;
+            my += dmy;
+        }
+
+        // Clamp our mouse position, so our mouse doesn't go offscreen and into the abyss forever.
+        if(mx < 0)      mx = 0;
+        if(my < 0)      my = 0;
+        if(mx > 0.999)  mx = 0.999;
+        if(my > 0.999)  my = 0.999;
+
+        // Time to display our cursor!
+        // I have to remember that we used the SetHudSize function.
+        // I can't use a value from 0.0 to 1.0 for our display coordinates.
+        // I have to use a value from 0.0 to 960.0 for x, and 0.0 to 600.0 for y.
+        // So that's why I have my fixedToPixel function defined above!
+        // I also have to add 0.1 to each of our coordinates.
+        // This signals to ZDoom I want the upper left corner of my image to be at the integer part of the coordinates.
+		mousex = fixedToPixel(mx,HUDX)+0.1;
+		mousey = fixedToPixel(my,HUDY)+0.1;
+		//LogDebugLoop("Mouse : Loop.MouseShow");
+        HudMessage(s:"a"; HUDMSG_PLAIN, 1, CR_UNTRANSLATED, mousex, mousey, 0);
+		//LogDebugLoop("Mouse : Loop.Angle");
+		SetActorAngle(dolltid, VectorAngle((mousex-480.0), (300.0-mousey)));
+		NamedRequestScriptPuke("AngleChanger", VectorAngle((mousex-480.0), (300.0-mousey)), dolltid);
+		//NamedRequestScriptPuke("AngleChangerClient", VectorAngle((mousex-480.0), (300.0-mousey)), dolltid);
+        Delay(1);
+    }
+    Terminate;
+}
+
+Script "AngleChanger" (int angle, int tid) NET
+{
+	ACS_NamedExecuteAlways("AngleChangerClient", 0, angle, tid);
+	TakeInventory("FDMHotline_Angle", INT_MAX);
+	GiveInventory("FDMHotline_Angle", angle);
+	//SetActorAngle(tid, angle);
+}
+
+Script "AngleChangerClient" (int angle, int tid) NET CLIENTSIDE
+{
+	SetActorAngle(tid, angle);
+}
+
+Script "Hotline_Melee_Dull" (void)
+{
+	PlaySound(0, "sndhit3");
+}
+
+strict namespace{
+
+Script "HotlineClipCounter" (void)
+{
+	//SetActivator(0, AAPTR_TARGET);
+	int clips = CheckInventory("Clip");
+	LogDebug(str(clips));
+	TakeInventory("Clip", 400);
+	SetResultValue(clips);
+}
+
+}
+script "Player_Steps" ENTER
+{
+	Delay(1);
+} //Disabling footset sound //doesnt work :(
+
+	

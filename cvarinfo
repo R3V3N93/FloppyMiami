@@ -1,0 +1,2 @@
+user bool cl_zh_developer = false;
+//user bool cl_zh_developer_loop = false; //This cvar is NOT made by Fused, but R3V3N93 for his log messages. I'm just matching the name for myself.

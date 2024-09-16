@@ -1,0 +1,144 @@
+ACTOR FDMHotline_TV 10005
+{
+    Radius 7
+    Height 200
+    Health 1
+    +Solid
+    +SHOOTABLE
+    +NOBLOOD
+    Mass 0x7FFFFFFFF
+    States
+    {
+        Spawn:
+            TNT1 A 0
+            HMTV A 1
+            Loop
+        Death:
+            TNT1 A 0 A_PlaySound("sndTaser")
+            HMTV B -1
+            Wait
+    }
+}
+
+ACTOR FDMHotline_Worm 10006
+{
+    Radius 7
+    Height 200
+    +NOBLOCKMAP
+    Mass 0x7FFFFFFFF
+    States
+    {
+        Spawn:
+            TNT1 A 0
+            GRIP A 1
+            Loop
+    }
+}
+
+ACTOR FDMHotline_Car_Cop 10007
+{
+    Radius 7
+    Height 200
+    +NOBLOCKMAP
+    Mass 0x7FFFFFFFF
+    States
+    {
+        Spawn:
+            TNT1 A 0
+            VEHI A 1
+            Loop
+    }
+}
+
+ACTOR FDMHotline_Car_Fans 10008
+{
+    Radius 7
+    Height 200
+    +NOBLOCKMAP
+    Mass 0x7FFFFFFFF
+    States
+    {
+        Spawn:
+            TNT1 A 0
+            VEHI A 1
+            Loop
+    }
+}
+
+ACTOR FDMHotline_Car_Gangs 10009
+{
+    Radius 7
+    Height 200
+    +NOBLOCKMAP
+    Mass 0x7FFFFFFFF
+    States
+    {
+        Spawn:
+            TNT1 A 0
+            VEHI A 1
+            Loop
+    }
+}
+
+ACTOR FDMHotline_Car_50Blessings 10010
+{
+    Radius 7
+    Height 200
+    +NOBLOCKMAP
+    Mass 0x7FFFFFFFF
+    States
+    {
+        Spawn:
+            TNT1 A 0
+            VEHI A 1
+            Loop
+    }
+}
+
+
+ACTOR FDMHotline_Gripper
+{
+    var int user_gripped;
+    Monster
+    Radius 59
+    Height 200
+    //+Solid
+    +NOBLOCKMAP
+    +NOCLIP
+    Health 0x7FFFFFFFF
+    Mass 0x7FFFFFFFF
+    +LOOKALLAROUND
+    MaxTargetRange 5120
+    MeleeRange 150
+    States
+    {
+        Spawn:
+            TNT1 A 0 A_Jumpif(user_gripped == 1, 2)
+            GRIP A 1 
+            Loop
+            GRIP H 1 A_Look
+            Loop
+        Gripping:
+            GRIP ABCDEFGH 3
+            TNT1 A 0 A_SetUservar("user_gripped", 1)    
+            Goto Spawn
+        See:
+            GRIP H 2 A_FaceTarget
+            GRIP H 0 A_JumpIfCloser(118, "Melee")
+            GRIP H 2 A_Recoil (-8)
+            GRIP H 2 A_FaceTarget
+            GRIP H 0 A_JumpIfCloser(56, "Melee")
+            GRIP H 2 A_Recoil (-8)
+            GRIP H 2 A_FaceTarget
+            GRIP H 0 A_JumpIfCloser(56, "Melee")
+            GRIP H 2 A_Recoil (-8)
+            GRIP H 2 A_FaceTarget
+            GRIP H 0 A_JumpIfCloser(56, "Melee")
+            GRIP H 2 A_Recoil (-8)
+            Loop
+        Melee:
+            GRIP H 1 A_CustomMeleeAttack(100)
+            Goto Spawn
+
+    }
+}

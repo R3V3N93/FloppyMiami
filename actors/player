@@ -1,0 +1,52 @@
+
+ACTOR RedTeamSpawn 6010
+{
+	//$Category "Player Starts/Teams"
+	//$Color 12
+	//$Icon TEAM_RED
+	States
+	{
+	Spawn:
+	TNT1 A -1
+	Stop
+	}
+}
+
+ACTOR BlueTeamSpawn 6011
+{
+	//$Category "Player Starts/Teams"
+	//$Color 9
+	//$Icon TEAM_BLU
+	States
+	{
+	Spawn:
+	TNT1 A -1
+	Stop
+	}
+}
+
+ACTOR GoldTeamSpawn 6012
+{
+	//$Category "Player Starts/Teams"
+	//$Color 14
+	//$Icon TEAM_GOL
+	States
+	{
+	Spawn:
+	TNT1 A -1
+	Stop
+	}
+}
+
+ACTOR GreenTeamSpawn 6013
+{
+	//$Category "Player Starts/Teams"
+	//$Color 10
+	//$Icon TEAM_GRE
+	States
+	{
+	Spawn:
+	TNT1 A -1
+	Stop
+	}
+}
